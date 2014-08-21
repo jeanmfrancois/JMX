@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<ui:composition>
+	<div id="page-content">
+		<h:form>
+			<p:panel header="Create Simulation">
+				<p:messages globalOnly="true"/>
+				<h:panelGrid columns="3" cellpadding="5">				
+					<h:outputLabel for="name" value="Simulation Name:" />
+					<p:inputText id="name" value="#{createSimulationController.simName}" label="Simulation Name" />
+					<p:message for="name" />
+
+					<h:outputLabel for="description" value="Simulation Description:" />
+					<p:inputText id="description" value="#{createSimulationController.simDescription}" label="Simulation Description" />
+					<p:message for="description" />
+
+
+					<h:outputLabel for="segments" value="Periods" />
+					<p:selectOneMenu id="segments" value="#{createSimulationController.totalSegments}">
+						<f:selectItem itemLabel="1 Unit" itemValue="1" />
+						<f:selectItem itemLabel="2 Divisions" itemValue="2" />
+						<f:selectItem itemLabel="3 Segments" itemValue="3" />
+						<f:selectItem itemLabel="4 Quarters" itemValue="4" />
+						<f:selectItem itemLabel="5 Showings" itemValue="5" />
+						<f:selectItem itemLabel="6 Sets" itemValue="6" />
+						<f:selectItem itemLabel="7 Sessions" itemValue="7" />
+						<f:selectItem itemLabel="8 Seperations" itemValue="8" />
+						<f:selectItem itemLabel="9 Innings" itemValue="9" />
+						<f:selectItem itemLabel="10 Years" itemValue="10" />
+					</p:selectOneMenu>
+					<h:inputHidden/>
+
+					<h:outputText id="totalDaysLabel" value="Total Days:" />
+					<p:slider for="totalDays" display="daysOutput" style="width:200px" minValue="1" maxValue="480" displayTemplate="{value} Days" />
+					<h:outputText id="daysOutput" value="#{createSimulationController.totalDays} Days" />
+
+					<h:outputText id="durationLabel" value="Total Duration:" />
+					<p:slider for="durationInMinutes" display="durationOutput" style="width:200px" minValue="10" maxValue="6000" step="2" displayTemplate="{value} Minutes" />
+					<h:outputText id="durationOutput" value="#{createSimulationController.durationInMinutes} Minutes" />
+					
+					<h:inputHidden id="totalDays" value="#{createSimulationController.totalDays}" />
+					<h:inputHidden id="durationInMinutes" value="#{createSimulationController.durationInMinutes}" />
+	
+				</h:panelGrid>
+				
+				<p:commandButton value="Create Simulation" ajax="false" icon="ui-icon-check" action="#{createSimulationController.createSimulation}" />
+			
+			</p:panel>
+		</h:form>
+	</div>
+</ui:composition>
+</html>

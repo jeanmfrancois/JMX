@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+
+
+<ui:composition>
+	<div id="page-content">
+		<script type="text/javascript">
+			function start() {
+				PF('startButton1').disable();
+
+				window['progress'] = setInterval(function() {
+					var pbClient = PF('pbClient'), oldValue = pbClient
+							.getValue(), newValue = oldValue + 10;
+
+					pbClient.setValue(pbClient.getValue() + 10);
+
+					if (newValue === 100) {
+						clearInterval(window['progress']);
+					}
+
+				}, 1000);
+			}
+
+			function cancel() {
+				clearInterval(window['progress']);
+				PF('pbClient').setValue(0);
+				PF('startButton1').enable();
+			}
+		</script>
+
+
+		<h:form>
+			<p:growl id="growl" />
+			<p:panel header="Run Simulation" id="view-security">
+
+
+				<h:panelGrid columns="1" style="margin:10px" cellpadding="5" columnClasses="label, column">
+
+					<h:outputText value="Select Simulation" style="font-weight:bold;top:0px;" />
+					<p:selectOneMenu id="simulationSelect" value="#{runSimulationController.selectedSimulationId}">
+					<f:selectItem itemLabel="SelectOne" noSelectionOption="true" />
+						<f:selectItems value="#{runSimulationController.simulations}" var="sim" itemLabel="#{sim.name}" itemValue="#{sim.id}" />
+						<p:ajax listener="#{runSimulationController.enableRun}"  update="simulationSelect,pba,pbb,pbc,start,cancel,simulationChoice,curDayLabel,curSegmentLabel,curDaySLabel" />
+					</p:selectOneMenu>
+
+
+				</h:panelGrid>
+				<h:panelGrid id="controllers" columns="2" style="margin-bottom:10px;text-align:center;">
+					<p:commandButton id="start" value="Run" onclick="PF('pbAjaxA').start();PF('pbAjaxB').start();pbAjaxC.start();" disabled="#{runSimulationController.cantRun}" actionListener="#{runSimulationController.runSimulation}" widgetVar="runButton" />
+					<p:commandButton id="cancel"  value="Stop" actionListener="#{runSimulationController.cancel}" oncomplete="pbAjaxA.cancel();pbAjaxB.cancel();pbAjaxC.cancel();" />
+				</h:panelGrid>
+				<h:panelGrid columns="1" style="margin-bottom:10px;text-align:center;">
+					<p:outputLabel id="simulationChoice" value="#{runSimulationController.selectedSimulationInfo}" />
+				</h:panelGrid>
+
+				<p:panelGrid columns="1" style="width:100%;">
+
+
+					<h:outputText id="curDayLabel" value="Segment progress: (Current day in segment: #{runSimulationController.curDay})" />
+					<p:progressBar id="pba"  interval="3000" widgetVar="pbAjaxA" ajax="true" value="#{runSimulationController.dayProgress}" 
+						labelTemplate="{value}% of total segment days completed" styleClass="animated">
+						<p:ajax event="complete" actionListener="#{runSimulationController.onComplete}" update="growl" />
+					</p:progressBar>
+
+					<h:outputText value="" style="backgrund-color:gray;" />
+
+					<h:outputText id="curSegmentLabel"  value="Segment Progress: (Segment #{runSimulationController.curSegment})" />
+					<p:progressBar id="pbb" interval="3000" widgetVar="pbAjaxB" ajax="true" value="#{runSimulationController.segmentProgress}"
+						labelTemplate="{value}% of current segment completed" styleClass="animated">
+						<p:ajax event="complete" actionListener="#{runSimulationController.onComplete}" update="growl" />
+					</p:progressBar>
+
+					<h:outputText value="" style="backgrund-color:gray;" />
+
+					<h:outputText  id="curDaySLabel" value="Simulation Progress: (Day #{runSimulationController.curSimulationDay})" />
+					<p:progressBar id="pbc" interval="3000" widgetVar="pbAjaxC" ajax="true" value="#{runSimulationController.simulationProgress}"
+						labelTemplate="{value}% of simulation completed" styleClass="animated">
+						<p:ajax event="complete" actionListener="#{runSimulationController.onComplete}" update="growl" />
+					</p:progressBar>
+
+				</p:panelGrid>
+			</p:panel>
+		</h:form>
+	</div>
+</ui:composition>
+</html>

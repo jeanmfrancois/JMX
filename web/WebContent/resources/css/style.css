@@ -1,0 +1,83 @@
+@CHARSET "ISO-8859-1";
+
+
+span {
+	font-size:14px;	
+}
+
+#header {
+	min-width:1195px;
+}
+
+body {
+	min-width:1195px;
+	background-image: url('#{resource['images/background.gif']}');
+	background-repeat: repeat-x;
+}
+
+#jmse {
+	padding-left:25px;
+}
+
+#fisa {
+	padding-left:22%;
+}
+
+#header-image {
+	float:right;
+	padding-right:25px;
+}
+
+#page-content {
+	padding-top:10px;
+}
+
+
+#homepage-placeholder .ui-panel-titlebar {
+	text-align:center;
+}
+
+#homepage-video {
+	text-align:center;
+}
+
+
+#footer {
+	margin-top:10px;
+}
+
+.ui-panel-title {
+	font-size:16px;
+}
+
+.ui-panel-titlebar {
+	margin-bottom:20px;
+}
+
+#panel-text-area {
+	text-align:left;
+}
+#content {
+	font-size:10px;
+}
+
+#totalDays {
+	display:none;
+}
+
+#segments {
+	font-size:10px;
+}
+
+#newsbar {
+	margin:0px;
+}
+
+
+
+.animated .ui-progressbar-value {
+    background-image: url('#{resource['images/pbar-ani.gif']}');
+}
+
+
+
