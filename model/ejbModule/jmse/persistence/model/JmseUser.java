@@ -1,9 +1,7 @@
 package jmse.persistence.model;
 
-import java.io.Serializable;
-
 import javax.persistence.*;
-
+import java.io.Serializable;
 import java.util.List;
 
 
@@ -34,6 +32,7 @@ public class JmseUser implements Serializable {
 	private Integer totalUsers;
 	private Integer userRank;
 	private String username;
+	private String curCalcOpenCloseFifo;
 	private Role role;
 	private List<Team> teams;
 	private EmergencyContact emergencyContact;
@@ -272,7 +271,18 @@ public class JmseUser implements Serializable {
 	public void setUsername(String username) {
 		this.username = username;
 	}
+	
+	@Column(name="cur_calc_open_close_fifo")
+	public String getCurCalcOpenCloseFifo() {
+		return this.curCalcOpenCloseFifo;
+	}
 
+	public void setCurCalcOpenCloseFifo(String curCalcOpenCloseFifo) {
+		this.curCalcOpenCloseFifo = curCalcOpenCloseFifo;
+	}
+
+	
+	
 
 	//bi-directional many-to-one association to Role
 	@ManyToOne
@@ -307,5 +317,30 @@ public class JmseUser implements Serializable {
 	public void setEmergencyContact(EmergencyContact emergencyContact) {
 		this.emergencyContact = emergencyContact;
 	}
-
+	
+	/*
+	   @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	   	public ArrayList<Double> getActualPriceYCollection(Integer securityId) {
+	   		Security sec = getSecurityById(securityId);
+	   		ArrayList<Double> arrayList = new ArrayList<Double>();
+	   		try {
+	   			arrayList = Conversion.stringToDoubleArrayList(sec.getActualPriceYCollection());
+	   		} 
+	   		catch(Exception e) {
+	   			System.out.println("Error processing array from database for getActualPriceYCollection()");
+	   		}
+	   		return arrayList;
+	   	}
+	   	
+	       @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	   	public void setActualPriceYCollection(Integer securityId, ArrayList<Double> actualPriceYCollection) {
+	   		Security sec = getSecurityById(securityId);
+	   		try {
+	   	    	sec.setActualPriceYCollection(Conversion.doubleArrayListToString(actualPriceYCollection));
+	   		} 
+	   		catch(Exception e) {
+	   			System.out.println("Error processing array from database for setActualPriceYCollection()");
+	   		}
+	   	}
+ */
 }

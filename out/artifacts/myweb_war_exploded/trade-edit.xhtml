@@ -1,0 +1,132 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+
+
+<ui:composition>
+	<div id="page-content">
+
+		<f:metadata>
+			<f:event listener="#{editTradeController.initPage}" type="preRenderView"></f:event>
+		</f:metadata>
+
+		<h:form>
+			<p:growl id="growl" />
+			<p:panel header="Edit Trades" id="editTrades">
+
+				<p:panelGrid columns="1" style="width:100%;padding=0px;border:0px;margin-bottom:10px;">
+					<f:facet name="header">
+						<h:outputText id="simTitle" value="#{editTradeController.selectedSimulation.name}" />
+					</f:facet>
+
+					<p:dataTable id="edit-trades-table" var="trade" value="#{editTradeController.tradeCollection}" paginator="true" rows="10">
+						<p:column sortBy="creationDate">
+							<f:facet name="header">
+								<h:outputText value="Time Stamp" />
+							</f:facet>
+							<h:outputText value="#{trade.creationDate}" />
+						</p:column>
+
+						<p:column  sortBy="securityValueId">
+							<f:facet name="header">
+								<h:outputText value="Security" />
+							</f:facet>
+							<h:outputText value="#{trade.securityValueId}" />
+						</p:column>
+
+						<p:column  sortBy="sellerUserId">
+							<f:facet name="header">
+								<h:outputText value="Seller" />
+							</f:facet>
+							<h:outputText value="#{trade.sellerUserId}" />
+						</p:column>
+
+						<p:column  sortBy="buyerUserId">
+							<f:facet name="header">
+								<h:outputText value="Buyer" />
+							</f:facet>
+							<h:outputText value="#{trade.buyerUserId}" />
+						</p:column>
+
+						<p:column  sortBy="quantity">
+							<f:facet name="header">
+								<h:outputText value="Number Of Contracts" />
+							</f:facet>
+							<h:outputText value="#{trade.quantity}" />
+						</p:column>
+
+						<p:column  sortBy="pricePerShare">
+							<f:facet name="header">
+								<h:outputText value="Price per Contract" />
+							</f:facet>
+							<h:outputText value="#{trade.pricePerShare}" />
+						</p:column>
+
+						<p:column  sortBy="id">
+							<f:facet name="header">
+								<h:outputText value="Day" />
+							</f:facet>
+							<h:outputText value="#{trade.day.id}" />
+						</p:column>
+					</p:dataTable>
+
+					<f:facet name="footer">
+						<h:outputText id="simFooter" style="font-weight:normal;color:white;" value="Total simulation duration is... " />
+					</f:facet>
+
+				</p:panelGrid>
+
+				<p:panelGrid columns="2" width="100%">
+					<p:panel header="Export All Data">
+						<h:commandLink>
+							<p:graphicImage id="excel" library="images" name="excel.png" />
+							<p:dataExporter type="xls" target="edit-trades-table" fileName="trades" />
+						</h:commandLink>
+
+						<h:commandLink>
+							<p:graphicImage id="pdf" library="images" name="pdf.png" />
+							<p:dataExporter type="pdf" target="edit-trades-table" fileName="trades" />
+						</h:commandLink>
+
+						<h:commandLink>
+							<p:graphicImage id="csv" library="images" name="csv.png" />
+							<p:dataExporter type="csv" target="edit-trades-table" fileName="trades" />
+						</h:commandLink>
+
+						<h:commandLink>
+							<p:graphicImage id="xml" library="images" name="xml.png" />
+							<p:dataExporter type="xml" target="edit-trades-table" fileName="trades" />
+						</h:commandLink>
+					</p:panel>
+
+
+					<p:panel header="Export Page Data">
+						<h:commandLink>
+							<p:graphicImage id="excel-page-only" library="images" name="excel.png" />
+							<p:dataExporter type="xls" target="edit-trades-table" fileName="trades" pageOnly="true" />
+						</h:commandLink>
+
+						<h:commandLink>
+							<p:graphicImage id="pdf-page-only" library="images" name="pdf.png" />
+							<p:dataExporter type="pdf" target="edit-trades-table" fileName="trades" pageOnly="true" />
+						</h:commandLink>
+
+						<h:commandLink>
+							<p:graphicImage id="csv-page-only" library="images" name="csv.png" />
+							<p:dataExporter type="csv" target="edit-trades-table" fileName="trades" pageOnly="true" />
+						</h:commandLink>
+
+						<h:commandLink>
+							<p:graphicImage id="xml-page-only" library="images" name="xml.png" />
+							<p:dataExporter type="xml" target="edit-trades-table" fileName="trades" pageOnly="true" />
+						</h:commandLink>
+					</p:panel>
+				</p:panelGrid>
+			</p:panel>
+		</h:form>
+	</div>
+</ui:composition>
+</html>

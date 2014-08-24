@@ -6,6 +6,11 @@ import javax.persistence.*;
 
 import java.util.Date;
 
+import static javax.persistence.CascadeType.PERSIST;
+import static javax.persistence.CascadeType.MERGE;
+import static javax.persistence.CascadeType.REFRESH;
+import static javax.persistence.CascadeType.ALL;
+
 
 /**
  * The persistent class for the trade database table.
@@ -16,6 +21,7 @@ import java.util.Date;
 public class Trade implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private Integer id;
+	private Integer index;
 	private Integer adminUserId;
 	private Integer buyerUserId;
 	private Date creationDate;
@@ -47,7 +53,7 @@ public class Trade implements Serializable {
 	 * @param totalTradeCost
 	 * @param day
 	 */
-	public Trade(Integer adminUserId, Integer buyerUserId, Date creationDate,
+	public Trade(Integer adminUserId, Integer index, Integer buyerUserId, Date creationDate,
 			Boolean isValid, Date lastModifiedDate, double pricePerShare,
 			Integer quantity, Integer securityValueId, Integer sellerUserId,
 			double totalTradeCost, Day day) {
@@ -178,17 +184,30 @@ public class Trade implements Serializable {
 	public void setTotalTradeCost(double totalTradeCost) {
 		this.totalTradeCost = totalTradeCost;
 	}
-
-
+	
 	//bi-directional many-to-one association to Day
-	@ManyToOne(cascade={CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
-	@JoinColumn(name="id", insertable=false, updatable=false)
+	@ManyToOne(fetch=FetchType.EAGER, cascade = { PERSIST, REFRESH, MERGE })
+	@JoinColumn(name="day_id", insertable=false, updatable=false)
 	public Day getDay() {
 		return this.day;
 	}
 
 	public void setDay(Day day) {
 		this.day = day;
+	}
+
+
+
+	@Column(name="index")
+	public Integer getIndex() {
+		return index;
+	}
+
+
+
+	
+	public void setIndex(Integer index) {
+		this.index = index;
 	}
 
 }

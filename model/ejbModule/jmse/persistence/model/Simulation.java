@@ -1,9 +1,7 @@
 package jmse.persistence.model;
 
-import java.io.Serializable;
-
 import javax.persistence.*;
-
+import java.io.Serializable;
 import java.util.List;
 
 
@@ -12,6 +10,7 @@ import java.util.List;
  * 
  */
 @Entity
+@Table(name = "Simulation")
 @NamedQueries({
 	@NamedQuery(name="Simulation.findAll", query="SELECT s FROM Simulation s"),
     @NamedQuery(name = "Simulation.findById", query = "SELECT s FROM Simulation s WHERE s.id = :id")})
@@ -21,8 +20,8 @@ public class Simulation implements Serializable {
 	private Integer curDayId;
 	private Integer curSegmentId;
 	private String description;
-	private Integer durationInMinutes;
-	private Integer durationInSeconds;
+	private Long durationInMinutes;
+	private Long durationInSeconds;
 	private Long durationInMilliseconds;
 	private Long elapsedDurationInMilliseconds;
 	private Boolean isActive;
@@ -32,16 +31,30 @@ public class Simulation implements Serializable {
 	private Integer totalSimulationTrades;
 	private Integer totalTeams;
 	private Integer totalUsers;
+	private String curNewsItem;
 	
 	private List<Segment> segments;
-	private SecuritySet securitySet;
 	private List<Sponsor> sponsors;
 	private List<Team> teams;
+	private List<Security> securities;
 
 	public Simulation() {
+		/*setSegments(new ArrayList<Segment>());
+		setSecuritySet(new SecuritySet());
+		setSponsors(new ArrayList<Sponsor>());
+		setTeams(new ArrayList<Team>());
+		*/
+	}
+
+	/*public Simulation(String echoMessage) {
+		super();
+		setSegments(new ArrayList<Segment>());
+		setSecuritySet(new SecuritySet());
+		setSponsors(new ArrayList<Sponsor>());
+		setTeams(new ArrayList<Team>());
+		System.out.println("EXECUTED Message Con");
+	}	*/
 		
-	}	
-	
 
 	/**
 	 * @param id
@@ -65,13 +78,13 @@ public class Simulation implements Serializable {
 	 * @param teams
 	 */
 	public Simulation(Integer curDayId, Integer curSegmentId,
-			String description, Integer durationInMinutes,
-			Integer durationInSeconds, Long durationInMilliseconds, 
+			String description, Long durationInMinutes,
+			Long durationInSeconds, Long durationInMilliseconds, 
 			Long elapsedDurationInMilliseconds, Boolean isActive, String name,
 			Integer totalDays, Integer totalSegments,
 			Integer totalSimulationTrades, Integer totalTeams,
 			Integer totalUsers, List<Segment> segments,
-			SecuritySet securitySet, List<Sponsor> sponsors, List<Team> teams) {
+			List<Security> securities, List<Sponsor> sponsors, List<Team> teams) {
 		super();
 		this.curDayId = curDayId;
 		this.curSegmentId = curSegmentId;
@@ -79,7 +92,7 @@ public class Simulation implements Serializable {
 		this.durationInMinutes = durationInMinutes;
 		this.durationInSeconds = durationInSeconds;
 		this.durationInMilliseconds = durationInMilliseconds;
-		this.elapsedDurationInMilliseconds = elapsedDurationInMilliseconds;
+		this.elapsedDurationInMilliseconds = 0L;
 		this.isActive = isActive;
 		this.name = name;
 		this.totalDays = totalDays;
@@ -88,7 +101,7 @@ public class Simulation implements Serializable {
 		this.totalTeams = totalTeams;
 		this.totalUsers = totalUsers;
 		this.segments = segments;
-		this.securitySet = securitySet;
+		this.securities = securities;
 		this.sponsors = sponsors;
 		this.teams = teams;
 	}
@@ -135,21 +148,21 @@ public class Simulation implements Serializable {
 
 
 	@Column(name="duration_in_minutes")
-	public Integer getDurationInMinutes() {
+	public Long getDurationInMinutes() {
 		return this.durationInMinutes;
 	}
 
-	public void setDurationInMinutes(Integer durationInMinutes) {
+	public void setDurationInMinutes(Long durationInMinutes) {
 		this.durationInMinutes = durationInMinutes;
 	}
 
 
 	@Column(name="duration_in_seconds")
-	public Integer getDurationInSeconds() {
+	public Long getDurationInSeconds() {
 		return this.durationInSeconds;
 	}
 
-	public void setDurationInSeconds(Integer durationInSeconds) {
+	public void setDurationInSeconds(Long durationInSeconds) {
 		this.durationInSeconds = durationInSeconds;
 	}
 	
@@ -242,7 +255,14 @@ public class Simulation implements Serializable {
 
 
 	//bi-directional many-to-one association to Segment
-	@OneToMany(mappedBy="simulation", fetch=FetchType.EAGER)
+	//@OneToMany(fetch = EAGER, cascade = { ALL, DETACH, REFRESH, REMOVE, MERGE })
+	//@JoinColumn(table = "segment", name = "simulation_id", insertable = true, updatable = true)
+	//@JoinTable(name="segment")
+	//@JoinColumn(table = "segment", name = "simulation_id")
+	//TODO figure out Segment instead SEGMENT
+	
+	@OneToMany(cascade={CascadeType.ALL})
+	@JoinColumn(table="Segment", name="simulation_id", insertable=true, updatable=true)
 	public List<Segment> getSegments() {
 		return this.segments;
 	}
@@ -253,28 +273,18 @@ public class Simulation implements Serializable {
 
 	public Segment addSegment(Segment segment) {
 		getSegments().add(segment);
-		segment.setSimulation(this);
+		//TODO add after map
+		//segment.setSimulation(this);
 
 		return segment;
 	}
 
 	public Segment removeSegment(Segment segment) {
+		//TODO add mapped
 		getSegments().remove(segment);
-		segment.setSimulation(null);
+		//segment.setSimulation(null);
 
 		return segment;
-	}
-
-
-	//bi-directional one-to-one association to SecuritySet
-	@OneToOne(cascade={CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
-	@JoinColumn(name="id", insertable=false, updatable=false)
-	public SecuritySet getSecuritySet() {
-		return this.securitySet;
-	}
-
-	public void setSecuritySet(SecuritySet securitySet) {
-		this.securitySet = securitySet;
 	}
 
 
@@ -317,8 +327,35 @@ public class Simulation implements Serializable {
 		this.teams = teams;
 	}
 	
+	//TODO Security instead of SECURITY
+	@OneToMany(cascade={CascadeType.ALL})
+	@JoinColumn(table="Security", name="simulation_id", insertable=true, updatable=true)
+	//bi-directional many-to-one association to Security
+		////@OneToMany(mappedBy="simulation", fetch=FetchType.EAGER)
+		public List<Security> getSecurities() {
+			return this.securities;
+		}
+
+		public void setSecurities(List<Security> securities) {
+			this.securities = securities;
+		}
+
+		public Security addSecurity(Security security) {
+			getSecurities().add(security);
+			security.setSimulation(this);
+
+			return security;
+		}
+
+		public Security removeSecurity(Security security) {
+			getSecurities().remove(security);
+			security.setSimulation(null);
+
+			return security;
+		}
+	
 	public long getDayDuration() {
-		System.out.println("GET DAY PROGRESS... (CALC DURATION)");
+		////System.out.println("GET DAY PROGRESS... (CALC DURATION)");
 		long totalTime = getDurationInMilliseconds();
 		long divisions = (long) getTotalDays();
 		
@@ -337,7 +374,7 @@ public class Simulation implements Serializable {
 	}
 	
 	public int getDayProgress() {
-		System.out.println("GET DAY PROGRESS... E");
+		////System.out.println("GET DAY PROGRESS... E");
 		long elapsedTime = getElapsedDurationInMilliseconds();
 		long unitDuration = getDayDuration();
 		long remainingTime = elapsedTime % unitDuration;
@@ -353,7 +390,8 @@ public class Simulation implements Serializable {
 		/////System.out.println("day progression UNIT =  " + progression);
 		
 		int progress = Math.round(progression);
-		System.out.println(name + " getdaygprogress " + progress);
+		//System.out.println("PROGRESS..." + progress);
+		////System.out.println(name + " getdaygprogress " + progress);
 		return progress;
 	}
 	
@@ -404,7 +442,7 @@ public int getCurrentDayCountInSegment() {
 		double skippedTime = segmentDuration * curSegment;
 		double elapsedDayTime = elapsedTime - skippedTime;		
 		double curDay = Math.ceil(elapsedDayTime/dayDuration);
-		System.out.println("Current day in segment as a double: " + curDay);	
+		////System.out.println("Current day in segment as a double: " + curDay);	
 		return (int) curDay;
 	}
 
@@ -424,6 +462,24 @@ public int getCurrentDayCountInSimulation() {
 	double curDay = Math.ceil(elapsedTime/unitDuration);
 	//System.out.println("Current day as a double: " + curDay);	
 	return (int) curDay;
+}
+
+public void incrementSimulation(long duration) {
+	// TODO Auto-generated method stub
+	
+	this.elapsedDurationInMilliseconds+=duration;
+	
+}
+
+@Column(name="cur_news_item")
+public String getCurNewsItem() {
+	return curNewsItem;
+}
+
+
+
+public void setCurNewsItem(String curNewsItem) {
+	this.curNewsItem = curNewsItem;
 }
 
 

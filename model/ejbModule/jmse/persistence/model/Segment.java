@@ -1,9 +1,7 @@
 package jmse.persistence.model;
 
-import java.io.Serializable;
-
 import javax.persistence.*;
-
+import java.io.Serializable;
 import java.util.List;
 
 
@@ -12,10 +10,12 @@ import java.util.List;
  * 
  */
 @Entity
+@Table(name = "Segment")
 @NamedQuery(name="Segment.findAll", query="SELECT s FROM Segment s")
 public class Segment implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private Integer id;
+	private Integer index;
 	private Integer totalSegmentTrades;
 	private List<Day> days;
 	private Simulation simulation;
@@ -30,7 +30,7 @@ public class Segment implements Serializable {
 	 * @param days
 	 * @param simulation
 	 */
-	public Segment(Integer totalSegmentTrades, List<Day> days,
+	public Segment(Integer totalSegmentTrades, Integer index, List<Day> days,
 			Simulation simulation) {
 		super();
 		this.totalSegmentTrades = totalSegmentTrades;
@@ -61,8 +61,15 @@ public class Segment implements Serializable {
 	}
 
 
+	
+	////////bi-directional many-to-one association to Segment
+	////@OneToMany(fetch = EAGER)
+	////@JoinColumn(table = "day", name = "segment_id")
 	//bi-directional many-to-one association to Day
-	@OneToMany(mappedBy="segment", cascade={CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, fetch=FetchType.EAGER)
+	//@OneToMany(mappedBy="segment", cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
+	//TODO Figure day instead of DAY issue...
+	@OneToMany(cascade={CascadeType.ALL})
+	@JoinColumn( table="Day", name="segment_id", insertable=true, updatable=true)
 	public List<Day> getDays() {
 		return this.days;
 	}
@@ -72,29 +79,43 @@ public class Segment implements Serializable {
 	}
 
 	public Day addDay(Day day) {
+		//TODO add after mapped
 		getDays().add(day);
-		day.setSegment(this);
+		//day.setSegment(this);
 
 		return day;
 	}
 
 	public Day removeDay(Day day) {
+		//TODO add after mapped
 		getDays().remove(day);
-		day.setSegment(null);
+		//day.setSegment(null);
 
 		return day;
 	}
 
 
-	//bi-directional many-to-one association to Simulation
-	@ManyToOne
-	@JoinColumn(name="id", insertable=false, updatable=false)
+	@Column(name="index")
+	public Integer getIndex() {
+		return index;
+	}
+
+
+	
+	public void setIndex(Integer index) {
+		this.index = index;
+	}
+
+
+	/*bi-directional many-to-one association to Simulation
+	@ManyToOne(cascade = { PERSIST, MERGE, REFRESH })
+	@JoinColumn(name = "simulation_id", referencedColumnName = "id", insertable = false, updatable = false)
 	public Simulation getSimulation() {
 		return this.simulation;
 	}
 
 	public void setSimulation(Simulation simulation) {
 		this.simulation = simulation;
-	}
+	}*/
 
 }

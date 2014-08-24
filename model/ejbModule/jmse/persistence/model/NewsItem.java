@@ -1,8 +1,7 @@
 package jmse.persistence.model;
 
-import java.io.Serializable;
-
 import javax.persistence.*;
+import java.io.Serializable;
 
 
 /**
@@ -87,8 +86,10 @@ public class NewsItem implements Serializable {
 
 
 	//bi-directional one-to-one association to Day
-	@OneToOne
-	@JoinColumn(name="id", insertable=false, updatable=false)
+	//@OneToOne(mappedBy="newsItem", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+	//TODO change false and trueness
+	@OneToOne(cascade={CascadeType.ALL})
+	@JoinColumn(insertable = true, updatable = true)
 	public Day getDay() {
 		return this.day;
 	}

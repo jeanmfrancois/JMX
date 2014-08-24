@@ -1,10 +1,10 @@
 package jmse.persistence.model;
 
-import java.io.Serializable;
-
 import javax.persistence.*;
-
+import java.io.Serializable;
 import java.util.List;
+
+import static javax.persistence.FetchType.EAGER;
 
 
 /**
@@ -12,10 +12,14 @@ import java.util.List;
  * 
  */
 @Entity
-@NamedQuery(name="Day.findAll", query="SELECT d FROM Day d")
+@Table(name="Day")
+@NamedQueries({
+	@NamedQuery(name="Day.findAll", query="SELECT d FROM Day d"),
+	@NamedQuery(name = "Day.findById", query = "SELECT d FROM Day d WHERE d.id = :id")})
 public class Day implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private Integer id;
+	private Integer index;
 	private Boolean hasNews;
 	private Integer totalSegmentTrades;
 	private Segment segment;
@@ -34,7 +38,7 @@ public class Day implements Serializable {
 	 * @param newsItem
 	 * @param trades
 	 */
-	public Day(Boolean hasNews, Integer totalSegmentTrades, Segment segment,
+	public Day(Boolean hasNews, Integer index, Integer totalSegmentTrades, Segment segment,
 			NewsItem newsItem, List<Trade> trades) {
 		super();
 		this.hasNews = hasNews;
@@ -76,21 +80,21 @@ public class Day implements Serializable {
 		this.totalSegmentTrades = totalSegmentTrades;
 	}
 
-
-	//bi-directional many-to-one association to Segment
-	@ManyToOne(cascade={CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
-	@JoinColumn(name="id", insertable=false, updatable=false)
+	//TODO add mapped
+	/*bi-directional many-to-one association to Segment
+	@ManyToOne
+	@JoinColumn(name = "segment_id", referencedColumnName = "id", insertable = true, updatable = true)
 	public Segment getSegment() {
 		return this.segment;
 	}
 
 	public void setSegment(Segment segment) {
 		this.segment = segment;
-	}
+	}*/
 
 
 	//bi-directional one-to-one association to NewsItem
-	@OneToOne(mappedBy="day")
+	@OneToOne(mappedBy="day", cascade={CascadeType.ALL})
 	public NewsItem getNewsItem() {
 		return this.newsItem;
 	}
@@ -101,7 +105,7 @@ public class Day implements Serializable {
 
 
 	//bi-directional many-to-one association to Trade
-	@OneToMany(mappedBy="day", fetch=FetchType.EAGER)
+	@OneToMany(mappedBy="day",cascade={CascadeType.ALL}, fetch = EAGER)
 	public List<Trade> getTrades() {
 		return this.trades;
 	}
@@ -109,6 +113,18 @@ public class Day implements Serializable {
 	public void setTrades(List<Trade> trades) {
 		this.trades = trades;
 	}
+
+	@Column(name="index")
+	public Integer getIndex() {
+		return index;
+	}
+
+
+	
+	public void setIndex(Integer index) {
+		this.index = index;
+	}
+
 
 	public Trade addTrade(Trade trade) {
 		getTrades().add(trade);

@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<ui:composition>
+	<div id="page-content">
+
+		<h:form>
+			<p:poll interval="5" update="view-security" />
+			<p:panel header="View Security Bar Graph" id="view-security">
+				<p:messages globalOnly="true" />
+
+
+
+				<p:lineChart id="linearChart" animate="false" shadow="false" showMarkers="false" seriesColors="#{viewSecurityLineGraphController.seriesColor}"
+					value="#{viewSecurityLineGraphController.securityData}" legendPosition="#{viewSecurityLineGraphController.legendPosition}"
+					title="#{viewSecurityLineGraphController.title}" minX="#{viewSecurityLineGraphController.minX}"
+					maxX="#{viewSecurityLineGraphController.maxX}" minY="#{viewSecurityLineGraphController.minY}" maxY="#{viewSecurityLineGraphController.maxY}"
+					xaxisLabel="Day" yaxisLabel="Value" style="height:600px" />
+
+			</p:panel>
+
+			<p:poll interval="20" update="newsbar" listener="#{viewSecurityLineGraphController.changeNews}" />
+
+			<p:notificationBar id="newsbar" position="bottom" effect="slide" widgetVar="bar" styleClass="top" autoDisplay="true" style="margin:0px;">
+
+				<h:outputText value="#{viewSecurityLineGraphController.newsHeader}" style="color:#FF0000;font-size:36px;" />
+			</p:notificationBar>
+
+		</h:form>
+	</div>
+</ui:composition>
+</html>

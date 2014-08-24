@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+
+
+<ui:composition>
+	<div id="page-content">
+		<script type="text/javascript"></script>
+
+
+		<h:form>
+			
+			<p:panel id="create-trade" style="padding:5px;">
+
+				<f:facet name="header">
+					<h:outputText value="Perform Simulation Trade:" style="font-weight:bold;margin-top:-5px;" />
+				</f:facet>
+				<p:panelGrid columns="1" style="margin-bottom:10px;">
+					<h:outputText value="Select Simulation:" style="padding-bottom:10px;" />
+					<p:selectOneMenu id="simulationSelect" value="#{createTradeController.selectedSimulationId}">
+						<f:selectItem itemLabel="Select One" noSelectionOption="true" />
+						<f:selectItems value="#{createTradeController.simulations}" var="sim" itemLabel="#{sim.name}" itemValue="#{sim.id}" />
+						<p:ajax listener="#{createTradeController.enableTradePanel}" update="simulationSelect, simulationChoice, tradePanel" />
+					</p:selectOneMenu>
+				</p:panelGrid>
+
+
+				<p:tabView id="tradePanel">
+					<p:tab title="#{createTradeController.tradePanelName}" disabled="#{createTradeController.tradePanelDisabled}" columns="2" disabed="true"
+						style="padding:5px;">
+						<p:panelGrid columns="4" style="padding:5px;">
+						
+						
+
+							<h:outputLabel for="security" value="Security:" />
+							<p:selectOneMenu id="security" label="security" disabled="#{createTradeController.tradePanelDisabled}"
+								value="#{createTradeController.security}">
+								<f:selectItems id="securityOptions" value="#{createTradeController.selectedSimulation.securities}" var="sec" itemLabel="#{sec.symbol}" itemValue="#{sec.id}" />
+								<p:ajax event="select"  listener="#{createTradeController.checkRequiredFields}" update="performTradeButton" />
+							</p:selectOneMenu>
+							<p:message for="security" />
+							<h:outputText value="" />  
+
+
+
+							<h:outputLabel for="seller" value="Seller:" />
+							<p:inputText id="seller" value="#{createTradeController.seller}" label="seller" disabled="#{createTradeController.tradePanelDisabled}">
+								<p:ajax event="change"  listener="#{createTradeController.checkRequiredFields}" update="performTradeButton" />
+							</p:inputText>
+							<p:message for="seller" />
+							<h:outputText value="" />  
+							
+							<h:outputLabel for="buyer" value="Buyer:" />
+							<p:inputText id="buyer" value="#{createTradeController.buyer}" label="buyer" disabled="#{createTradeController.tradePanelDisabled}">
+								<p:ajax event="change"  listener="#{createTradeController.checkRequiredFields}" update="performTradeButton" />
+							</p:inputText>
+							<p:message for="buyer" />
+							<h:outputText value="" />  
+							
+							<h:outputLabel for="numContract" value="Number of contracts:" />
+							<p:inputText id="numContract" value="#{createTradeController.numContracts}" label="numContract"
+								disabled="#{createTradeController.tradePanelDisabled}">
+								<p:ajax event="change" listener="#{createTradeController.checkRequiredFields}" update="performTradeButton" />
+							</p:inputText>
+							<p:message for="numContract" />
+							<h:outputText value="" />  
+							
+							<h:outputLabel for="pricePerContract" value="Price per contract:" />
+							<p:inputMask id="pricePerContract" value="#{createTradeController.pricePerContract}" label="pricePerContract"
+								disabled="#{createTradeController.tradePanelDisabled}">
+								<p:ajax event="change"  listener="#{createTradeController.checkRequiredFields}" update="performTradeButton" />
+							</p:inputMask>
+							<p:message for="pricePerContract" />
+							<h:outputText value="" />  
+
+							<p:commandButton id="performTradeButton" ajax="false" value="Perform Trade" disabled="#{createTradeController.tradeButtonDisabled}"
+								iconPos="w" icon="ui-icon-check" actionListener="#{createTradeController.performTrade}"></p:commandButton>
+						</p:panelGrid>
+					</p:tab>
+				</p:tabView>
+
+				<f:facet name="footer">
+					<p:outputLabel id="simulationChoice" value="#{createTradeController.selectedSimulationInfo}" />
+				</f:facet>
+
+			</p:panel>
+		</h:form>
+	</div>
+</ui:composition>
+</html>

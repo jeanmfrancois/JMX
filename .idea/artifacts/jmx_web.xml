@@ -1,0 +1,18 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-ear" build-on-make="true" name="jmx-web">
+    <output-path>$PROJECT_DIR$/out/artifacts/jmx_web</output-path>
+    <root id="root">
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="model" />
+          <element id="module-output" name="web" />
+        </element>
+        <element id="jpa-descriptors" facet="model/jpa/JPA" />
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="libraries" />
+        </element>
+      </element>
+      <element id="javaee-facet-resources" facet="web/web/Web" />
+    </root>
+  </artifact>
+</component>
